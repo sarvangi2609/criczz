@@ -1,8 +1,8 @@
-# 🏏 CricZZ - Cricket Box Booking Platform
+# 🏏 MatchBox - Cricket Box Booking Platform
 
 ## What is This Project?
 
-CricZZ is an **online platform** where cricket lovers in Surat can book their favorite cricket box online.
+MatchBox is an **online platform** where cricket lovers in Surat can book their favorite cricket box online.
 
 ### The Real Problem:
 - Surat has 100+ cricket boxes
@@ -646,21 +646,16 @@ Refresh expires → User must login again
 
 Your project is complete when:
 
-1. ✅ User can register and login
-2. ✅ User can browse cricket boxes
-3. ✅ User can make online booking
-4. ✅ Payment works successfully
-5. ✅ User can create/join match requests
-6. ✅ User can chat with other players
-7. ✅ Owner dashboard works
-8. ✅ Offline booking can be added
-9. ✅ Real-time updates work
+1.  ✅ User can register and login
+2.  ✅ User can browse cricket boxes
+3.  ✅ User can make online booking
+4.  ✅ Payment works successfully
+5.  ✅ User can create/join match requests
+6.  ✅ User can chat with other players
+7.  ✅ Owner dashboard works
+8.  ✅ Offline booking can be added
+9.  ✅ Real-time updates work
 10. ✅ Website is live on internet
 
----
 
-**Read and understand all this first, then we will start coding together! Ask if you have any questions! 💪**
-
----
-
-*CricZZ - Surat's First Cricket Box Booking Platform* 🏏
+*MatchBox - Surat's First Cricket Box Booking Platform* 🏏
