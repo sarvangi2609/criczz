@@ -1,67 +1,67 @@
-# 🏏 MatchBox - Cricket Box Booking Platform
+# 🏏 CricZZ - Cricket Box Booking Platform
 
-## Aa Project Shu Che? (What is this Project?)
+## What is This Project?
 
-MatchBox ek **online platform** che jya Surat na cricket lovers potani pasandgi ni cricket box online book kari sake che. 
+CricZZ is an **online platform** where cricket lovers in Surat can book their favorite cricket box online.
 
-### Real Life Problem:
-- Surat ma 100+ cricket boxes che
-- Players ne phone karvu pade booking mate
-- Koi ek website nathi jya badhi boxes dekhai
-- Players ne ek bija ne match mate shadhva mushkel che
-- Last minute booking ma confusion thay
+### The Real Problem:
+- Surat has 100+ cricket boxes
+- Players have to call each box for booking
+- No single website shows all boxes
+- Hard for players to find other players for a match
+- Last minute bookings create confusion
 
-### Aapdu Solution:
-- Ek website jya badhi cricket boxes ni list hoy
-- Online booking thay, payment online thay
-- Players ek bija ne shadhine match rami sake
-- Chat kari sake booking confirm pehla
+### Our Solution:
+- One website showing all cricket boxes
+- Book online, pay online
+- Find other players for your match
+- Chat with players before confirming
 
 ---
 
-## 🎯 Main Features Samjo
+## 🎯 Understanding Main Features
 
-### 1. 🏟️ Cricket Box Listing (Cricket Box ni List)
+### 1. 🏟️ Cricket Box Listing
 
-**Shu Thase:**
-- Website par Surat ni badhi cricket boxes dekhai
-- Har box ni photos, address, price, facilities dekhai
-- Filter kari shakay (area wise, price wise)
-- Search kari shakay name thi
+**What Happens:**
+- Website shows all cricket boxes in Surat
+- Each box shows photos, address, price, facilities
+- Users can filter (by area, by price)
+- Users can search by name
 
 **Example:**
 ```
-User website khole → "Explore" page par jaye → 
-Filter kare "Vesu area" → Badhi Vesu ni boxes dekhai →
-"Green Turf" par click kare → Full details dekhai
+User opens website → Goes to "Explore" page → 
+Filters by "Vesu area" → Sees all Vesu boxes →
+Clicks on "Green Turf" → Sees full details
 ```
 
 ---
 
 ### 2. 📅 Online Booking System
 
-**Shu Thase:**
-- User date ane time select kare
-- System batave slot available che ke nai
-- Online payment kare (Razorpay/UPI)
-- Booking confirm thay, notification ave
+**What Happens:**
+- User selects date and time
+- System shows if slot is available or not
+- User pays online (Razorpay/UPI)
+- Booking gets confirmed, notification comes
 
-**Flow samjo:**
+**Step by Step Flow:**
 ```
-Step 1: User cricket box select kare
-Step 2: Date select kare (example: 25 January)
-Step 3: Time slot select kare (example: 6-7 PM)
-Step 4: System check kare - aa slot khali che ke nahi?
-        - Khali che → Booking page par jaye
-        - Booked che → "Not Available" batave
-Step 5: User payment kare
+Step 1: User selects a cricket box
+Step 2: User selects date (example: 25 January)
+Step 3: User selects time slot (example: 6-7 PM)
+Step 4: System checks - Is this slot empty or booked?
+        - Empty → Go to booking page
+        - Booked → Show "Not Available"
+Step 5: User makes payment
 Step 6: Payment success → Booking confirmed!
-Step 7: User ane Owner banne ne notification jaye
+Step 7: Both user and owner get notification
 ```
 
 **Important Concept - Slot Availability:**
 ```
-Ek cricket box ni 1 din ni timeline:
+One cricket box timeline for 1 day:
 
 6 AM  |████████| Booked (Raj)
 7 AM  |        | Available ✓
@@ -79,56 +79,56 @@ Ek cricket box ni 1 din ni timeline:
 
 ### 3. 🤝 Player Matching System
 
-**Problem Solve Kare:**
-- Tamari pase 4 friends che, but 8 joiye match mate
-- Tame ek request mukho: "4 players joiye 25 Jan, 6 PM, Vesu"
-- Bija players aa request joi shake ane join kari shake
+**Problem it Solves:**
+- You have 4 friends, but need 8 players for a match
+- You create a request: "Need 4 players, 25 Jan, 6 PM, Vesu"
+- Other players can see this request and join
 
-**Flow samjo:**
+**Step by Step Flow:**
 ```
 PLAYER A (Request Creator):
-1. "Create Match Request" par click kare
-2. Details bhare:
+1. Clicks "Create Match Request"
+2. Fills details:
    - Date: 25 January
    - Time: Evening (6-7 PM)
    - Location: Vesu area
    - Players needed: 4
    - Skill level: Intermediate
-3. Request publish thay
+3. Request gets published
 
 PLAYER B, C, D (Other Players):
-1. "Find Match" page par jaye
-2. Open requests ni list dekhe
-3. Player A ni request dekhe
-4. "Join" par click kare
-5. Request mokle
+1. Go to "Find Match" page
+2. See list of open requests
+3. See Player A's request
+4. Click "Join"
+5. Send request
 
 PLAYER A:
-1. Notification ave: "3 players interested"
-2. Players ni profile dekhe
-3. Accept kare je pasand pade
-4. Chat start thay matched players sathe
-5. Final booking kare
+1. Gets notification: "3 players interested"
+2. Views players' profiles
+3. Accepts the ones he likes
+4. Chat starts with matched players
+5. Makes final booking
 ```
 
 ---
 
 ### 4. 💬 Real-time Chat System
 
-**Kem Joiye:**
-- Matched players ek bija sathe coordinate kare
-- Timings discuss kare
-- Location share kare
+**Why Needed:**
+- Matched players can coordinate with each other
+- Discuss timings
+- Share location
 
-**Kaai rite kaam kare:**
+**How it Works:**
 ```
 Normal API Call:
-User message mokle → Server par jaye → Database ma save → 
-Receiver ne page refresh karvu pade message joava mate
+User sends message → Goes to server → Saves in database → 
+Receiver has to refresh page to see message
 
 Real-time (WebSocket):
-User message mokle → Server par jaye → Database ma save → 
-TURANT receiver ne message pohche (bina refresh) ✓
+User sends message → Goes to server → Saves in database → 
+Message reaches receiver INSTANTLY (no refresh needed) ✓
 ```
 
 **Chat Features:**
@@ -141,71 +141,71 @@ TURANT receiver ne message pohche (bina refresh) ✓
 
 ### 5. ⭐ Favorites System
 
-**Simple che:**
-- User koi box pasand ave to heart icon par click kare
-- E box "Favorites" list ma save thay
-- Jaldi thi access kari shake
+**Simple Feature:**
+- User likes a box, clicks heart icon
+- That box saves in "Favorites" list
+- Easy to access later
 
 ---
 
 ### 6. 📊 Owner Dashboard
 
-**Box Owner ne shu joiye:**
-- Aaj ketli bookings avi?
-- Kayo slot khali che?
-- Offline booking (walk-in) add karvu hoy to?
-- Mahina no revenue ketlo thayo?
+**What Box Owner Needs:**
+- How many bookings today?
+- Which slots are empty?
+- Add walk-in booking (offline)?
+- Monthly revenue?
 
 **Important Feature - Offline Booking:**
 ```
 Problem:
-- Koi customer directly box par aave (walk-in)
-- Phone karke booking kare
-- Aa bookings website par nathi dekhati
-- Online user same slot book kari de → CONFLICT!
+- A customer comes directly to the box (walk-in)
+- Or books via phone call
+- These bookings don't show on website
+- Online user books same slot → CONFLICT!
 
 Solution:
-- Owner app/website ma "Add Offline Booking" button
-- Owner walk-in booking add kare
-- System turant update thay
-- Online users ne e slot "Not Available" dekhay
+- Owner has "Add Offline Booking" button in app/website
+- Owner adds walk-in booking
+- System updates instantly
+- Online users see that slot as "Not Available"
 ```
 
 ---
 
-## 👥 Users na Types (User Roles)
+## 👥 Types of Users (User Roles)
 
 ### 1. Player (Normal User)
-- Cricket boxes browse kare
-- Online booking kare
-- Match requests mokle/join kare
-- Chat kare
-- Reviews aape
+- Browse cricket boxes
+- Make online bookings
+- Create/join match requests
+- Chat with other players
+- Give reviews
 
 ### 2. Box Owner
-- Potani cricket box list kare
-- Bookings manage kare
-- Offline bookings add kare
-- Revenue dekhe
-- Customer reviews dekhe
+- List their cricket box
+- Manage bookings
+- Add offline bookings
+- See revenue
+- Read customer reviews
 
-### 3. Admin (Tame - Platform Owner)
-- Badha users manage kare
-- Badhi boxes approve kare
-- Commission track kare
-- Disputes resolve kare
+### 3. Admin (You - Platform Owner)
+- Manage all users
+- Approve all boxes
+- Track commission
+- Resolve disputes
 
 ---
 
-## 💰 Paisa Kayathi Avse? (Revenue Model)
+## 💰 How Will You Make Money? (Revenue Model)
 
 ### 1. Online Booking Commission
 ```
-Player ₹1000 ni booking kare
+Player makes ₹1000 booking
          ↓
-Platform 10% (₹100) rakhe
+Platform keeps 10% (₹100)
          ↓
-Owner ne ₹900 male
+Owner gets ₹900
 ```
 
 ### 2. Subscription (Box Owners)
@@ -217,20 +217,20 @@ PRO ₹1999:   Priority listing, advanced features
 
 ### 3. Featured Listing
 ```
-Owner paisa aape → Ena box top par dekhai
-₹200/week - Homepage featured
-₹100/week - Search ma top
+Owner pays money → Their box shows on top
+₹500/week - Homepage featured
+₹300/week - Top in search results
 ```
 
 ---
 
-## 🗄️ Database ma Shu Store Thase?
+## 🗄️ What Will Be Stored in Database?
 
-### Tables (Data ni categories):
+### Tables (Categories of Data):
 
 #### 1. Users Table
 ```
-Shu store thase:
+What it stores:
 - ID (unique number)
 - Name
 - Email
@@ -240,12 +240,12 @@ Shu store thase:
 - Role (Player/Owner/Admin)
 - Skill level
 - Area in Surat
-- Account banana ni date
+- Account creation date
 ```
 
 #### 2. Cricket Boxes Table
 ```
-Shu store thase:
+What it stores:
 - ID
 - Name (Green Turf Cricket Box)
 - Address
@@ -255,18 +255,18 @@ Shu store thase:
 - Opening time, Closing time
 - Facilities (Parking, Lights, Washroom, etc.)
 - Photos
-- Owner ID (kon malik che)
+- Owner ID (who owns it)
 - Rating (4.5 stars)
-- Total bookings
+- Total bookings count
 ```
 
 #### 3. Bookings Table
 ```
-Shu store thase:
+What it stores:
 - Booking ID
 - Booking number (CBK-2024-001234)
-- User ID (kone book karyu)
-- Cricket Box ID (kya book karyu)
+- User ID (who booked)
+- Cricket Box ID (where booked)
 - Date
 - Start time, End time
 - Amount paid
@@ -277,7 +277,7 @@ Shu store thase:
 
 #### 4. Match Requests Table
 ```
-Shu store thase:
+What it stores:
 - Request ID
 - Creator User ID
 - Title ("Looking for 4 players")
@@ -291,7 +291,7 @@ Shu store thase:
 
 #### 5. Messages Table
 ```
-Shu store thase:
+What it stores:
 - Message ID
 - Conversation ID
 - Sender ID
@@ -302,156 +302,156 @@ Shu store thase:
 
 ---
 
-## 🔄 Important Flows Samjo
+## 🔄 Important Flows Explained
 
 ### Flow 1: User Registration
 ```
-1. User "Register" par click kare
-2. Phone number, Name, Email, Password bhare
-3. System check kare - phone already registered che?
-   - Ha → Error: "Already registered"
-   - Na → Continue
-4. OTP jaye phone par
-5. User OTP enter kare
-6. OTP match thay → Account created!
-7. User login kari shake
+1. User clicks "Register"
+2. Enters phone number, name, email, password
+3. System checks - Is phone already registered?
+   - Yes → Error: "Already registered"
+   - No → Continue
+4. OTP is sent to phone
+5. User enters OTP
+6. OTP matches → Account created!
+7. User can now login
 ```
 
 ### Flow 2: Complete Booking Flow
 ```
-1. User login kare
-2. Cricket box select kare
-3. Date select kare
-4. Available slots dekhai
-5. Slot select kare
-6. "Book Now" click kare
-7. Booking summary dekhai (Amount, Tax, Total)
-8. "Pay Now" click kare
-9. Razorpay payment page khole
-10. User payment kare (UPI/Card/NetBanking)
+1. User logs in
+2. Selects a cricket box
+3. Selects a date
+4. Available slots are shown
+5. Selects a slot
+6. Clicks "Book Now"
+7. Booking summary shown (Amount, Tax, Total)
+8. Clicks "Pay Now"
+9. Razorpay payment page opens
+10. User pays (UPI/Card/NetBanking)
 11. Payment success:
     - Booking confirmed
-    - Email/SMS jaye user ne
-    - Owner ne notification jaye
+    - Email/SMS sent to user
+    - Owner gets notification
     - Slot blocked in system
 12. Payment fail:
     - Booking cancelled
-    - Slot available rehay
-    - User retry kari shake
+    - Slot remains available
+    - User can retry
 ```
 
 ### Flow 3: Player Matching Flow
 ```
-1. Player A request banave:
-   - "4 players joiye"
+1. Player A creates request:
+   - "Need 4 players"
    - "26 Jan, 6-8 PM"
    - "Vesu area"
    - "Intermediate level"
 
-2. Request publish thay
+2. Request is published
 
-3. Notification jaye matching players ne:
-   - Vesu area na players
-   - Intermediate/Advanced level na
-   - Evening time prefer karta hoy te
+3. Notification sent to matching players:
+   - Players in Vesu area
+   - Intermediate/Advanced level players
+   - Those who prefer evening time
 
-4. Player B, C, D request dekhe
-   - "Join" click kare
-   - Message lakhe: "I'm in!"
+4. Player B, C, D see the request
+   - Click "Join"
+   - Write message: "I'm in!"
 
-5. Player A ne notification ave:
+5. Player A gets notification:
    - "3 players interested"
 
-6. Player A profiles dekhe:
+6. Player A views profiles:
    - Player B: 4.5 rating, 50 matches played
    - Player C: 4.0 rating, 30 matches played
    - Player D: 3.5 rating, 10 matches played
 
-7. Player A accept kare B and C
+7. Player A accepts B and C
 
-8. Chat room create thay (A, B, C)
+8. Chat room created (A, B, C)
 
-9. Players coordinate kare:
-   - Final timing confirm
-   - Meeting point decide
-   - Payment split discuss
+9. Players coordinate:
+   - Confirm final timing
+   - Decide meeting point
+   - Discuss payment split
 
-10. Player A final booking kare
+10. Player A makes final booking
 
 11. Match happens! 🏏
 ```
 
 ---
 
-## 📱 Website na Pages
+## 📱 Website Pages
 
-### Public Pages (Login Vagar):
+### Public Pages (Without Login):
 1. **Home** - Landing page, featured boxes
-2. **Explore** - Badhi boxes ni list with filters
-3. **Box Details** - Ek box ni full details
+2. **Explore** - All boxes list with filters
+3. **Box Details** - Full details of one box
 4. **Login** - Login form
 5. **Register** - Registration form
 
-### Protected Pages (Login Pachi):
-1. **My Bookings** - User ni bookings
+### Protected Pages (After Login):
+1. **My Bookings** - User's bookings
 2. **Player Matching** - Match requests
 3. **Chat** - Messages
 4. **Favorites** - Saved boxes
-5. **Profile** - User details edit
+5. **Profile** - Edit user details
 
 ### Owner Pages:
 1. **Dashboard** - Overview
-2. **My Box** - Box details edit
-3. **Bookings** - All bookings management
-4. **Add Offline Booking** - Walk-in booking add
+2. **My Box** - Edit box details
+3. **Bookings** - Manage all bookings
+4. **Add Offline Booking** - Add walk-in booking
 5. **Analytics** - Revenue, stats
 
 ---
 
-## 🔐 Security Samjo
+## 🔐 Understanding Security
 
 ### 1. Password Security
 ```
-User password: "mypassword123"
-         ↓ (Hashing)
-Database ma store: "a7f8b2c9e4d1..." (unreadable)
+User's password: "mypassword123"
+         ↓ (Hashing process)
+Stored in database: "a7f8b2c9e4d1..." (unreadable)
 
-Koi database hack kare to pan password nai male
+Even if someone hacks database, they can't read passwords
 ```
 
-### 2. Authentication (Kon che tu?)
+### 2. Authentication (Who are you?)
 ```
-User login kare → Server "Token" aape (like temporary ID card)
+User logs in → Server gives "Token" (like temporary ID card)
          ↓
-User har request sathe token mokle
+User sends token with every request
          ↓
-Server check kare token valid che → Access aape
-Server check kare token invalid → "Please login" error
+Server checks if token is valid → Gives access
+Server checks if token is invalid → Shows "Please login" error
 ```
 
-### 3. Authorization (Tane shu karva ni permission che?)
+### 3. Authorization (What are you allowed to do?)
 ```
-Player login kare → Booking kari shake ✓
-                  → Owner dashboard na dekhi shake ✗
+Player logs in → Can make bookings ✓
+               → Cannot see owner dashboard ✗
 
-Owner login kare → Potani box edit kari shake ✓
-                 → Bija ni box edit na kari shake ✗
+Owner logs in → Can edit own box ✓
+              → Cannot edit someone else's box ✗
 ```
 
 ---
 
-## 🔗 Frontend ane Backend Kaai rite Connect Thay?
+## 🔗 How Frontend and Backend Connect?
 
 ### Concept: API (Application Programming Interface)
 ```
-Frontend (React - User dekhe)     Backend (Python - Logic)
-        ↓                                ↓
-   User clicks                    Database interaction
-   "Book Now"                     Payment processing
-        ↓                                ↓
-        └──────── API Request ──────────→
+Frontend (React - What user sees)     Backend (Python - Logic)
+        ↓                                    ↓
+   User clicks                        Database interaction
+   "Book Now"                         Payment processing
+        ↓                                    ↓
+        └──────── API Request ──────────────→
                   (HTTP/REST)
-        ←──────── API Response ──────────┘
+        ←──────── API Response ─────────────┘
              (Success/Error data)
 ```
 
@@ -459,15 +459,15 @@ Frontend (React - User dekhe)     Backend (Python - Logic)
 ```
 Frontend wants: List of cricket boxes in Vesu
 
-1. Frontend mokle request:
+1. Frontend sends request:
    GET /api/v1/cricket-boxes?area=Vesu
 
 2. Backend:
-   - Request receive kare
-   - Database mathi Vesu ni boxes laye
-   - Response banave
+   - Receives request
+   - Gets Vesu boxes from database
+   - Creates response
 
-3. Backend mokle response:
+3. Backend sends response:
    {
      "boxes": [
        {"name": "Green Turf", "price": 800},
@@ -475,7 +475,7 @@ Frontend wants: List of cricket boxes in Vesu
      ]
    }
 
-4. Frontend aa data display kare
+4. Frontend displays this data
 ```
 
 ---
@@ -485,19 +485,19 @@ Frontend wants: List of cricket boxes in Vesu
 ### Normal HTTP vs WebSocket:
 ```
 HTTP (Normal):
-- User request mokle → Server respond kare → Connection close
-- New data joiye? Fari request moklo
+- User sends request → Server responds → Connection closes
+- Need new data? Send another request
 
 WebSocket (Real-time):
-- Connection open rehe
-- Server kyare pan data mokli shake
-- Chat, live updates mate perfect
+- Connection stays open
+- Server can send data anytime
+- Perfect for chat, live updates
 ```
 
-### Apna Project ma Use:
+### Where We Use It:
 1. **Chat messages** - Instant delivery
-2. **Booking updates** - Slot book thai to turant update
-3. **Online status** - User online che ke offline
+2. **Booking updates** - When slot gets booked, instant update
+3. **Online status** - Is user online or offline
 4. **Typing indicator** - "Raj is typing..."
 
 ---
@@ -506,40 +506,40 @@ WebSocket (Real-time):
 
 ### Step by Step:
 ```
-1. User "Pay Now" click kare
+1. User clicks "Pay Now"
 
 2. Frontend → Backend:
    "Create payment order for ₹1000"
 
 3. Backend → Razorpay:
-   "Ek order create karo"
+   "Create an order"
 
 4. Razorpay → Backend:
    "Order ID: order_abc123"
 
 5. Backend → Frontend:
-   "Order ID lyo, payment page kolo"
+   "Here's Order ID, open payment page"
 
-6. Frontend Razorpay popup khole:
-   - User card/UPI details bhare
-   - Payment kare
+6. Frontend opens Razorpay popup:
+   - User enters card/UPI details
+   - Makes payment
 
 7. Razorpay → Frontend:
    "Payment successful, payment_id: pay_xyz"
 
 8. Frontend → Backend:
-   "Payment verify karo"
+   "Verify this payment"
 
 9. Backend → Razorpay:
-   "Aa payment valid che?"
+   "Is this payment valid?"
 
 10. Razorpay → Backend:
-    "Ha, valid che"
+    "Yes, it is valid"
 
 11. Backend:
-    - Booking confirm kare
-    - Database update kare
-    - Notification mokle
+    - Confirms booking
+    - Updates database
+    - Sends notification
 
 12. Backend → Frontend:
     "Booking confirmed! 🎉"
@@ -550,26 +550,26 @@ WebSocket (Real-time):
 ## 🚀 Development Approach
 
 ### Phase 1: Foundation (Understanding)
-- [ ] Project structure samjo
-- [ ] Database design samjo
-- [ ] API concepts samjo
-- [ ] Flow diagrams samjo
+- [ ] Understand project structure
+- [ ] Understand database design
+- [ ] Understand API concepts
+- [ ] Understand flow diagrams
 
 ### Phase 2: Setup
-- [ ] Tools install karo
-- [ ] Project folders create karo
-- [ ] Basic apps run karo
+- [ ] Install tools
+- [ ] Create project folders
+- [ ] Run basic apps
 
 ### Phase 3: Backend First
-- [ ] Database tables banavo
-- [ ] Auth (Login/Register) banavo
-- [ ] Basic APIs banavo
-- [ ] Test karo (Postman/Thunder Client)
+- [ ] Create database tables
+- [ ] Build Auth (Login/Register)
+- [ ] Build basic APIs
+- [ ] Test using Postman/Thunder Client
 
 ### Phase 4: Frontend
-- [ ] Pages banavo
-- [ ] Backend sathe connect karo
-- [ ] UI design karo
+- [ ] Build pages
+- [ ] Connect with backend
+- [ ] Design UI
 
 ### Phase 5: Advanced
 - [ ] Payment integration
@@ -585,71 +585,82 @@ WebSocket (Real-time):
 
 ## ❓ Common Questions
 
-### Q: Database ma relationships shu che?
+### Q: What are database relationships?
 ```
-User ←──────→ Booking (One user, many bookings)
+User ←──────→ Booking (One user can have many bookings)
               ↓
-CricketBox ←─ Booking (One box, many bookings)
+CricketBox ←─ Booking (One box can have many bookings)
 
 User ←──────→ MatchRequest (One user creates many requests)
               ↓
-User ←──────→ MatchResponse (Many users respond)
+User ←──────→ MatchResponse (Many users can respond)
 ```
 
-### Q: API Request types shu che?
+### Q: What are API request types?
 ```
-GET    → Data levo (Read)
-POST   → Data create karvo (Create)
-PUT    → Data update karvo (Update)
-DELETE → Data delete karvo (Delete)
+GET    → Get data (Read)
+POST   → Create data (Create)
+PUT    → Update data (Update)
+DELETE → Remove data (Delete)
 ```
 
-### Q: Token expire thay to?
+### Q: What happens when token expires?
 ```
 Access Token: 30 minutes (short life)
 Refresh Token: 7 days (long life)
 
-Access expire → Refresh token thi new access lyo
-Refresh expire → User ne fari login karvu pade
+Access expires → Use refresh token to get new access token
+Refresh expires → User must login again
 ```
 
 ---
 
 ## 📌 Key Terms Dictionary
 
-| Term | Gujarati Meaning |
-|------|------------------|
-| Frontend | User je dekhe (Website UI) |
-| Backend | Server par chaltu logic |
-| Database | Data store thay tya |
-| API | Frontend-Backend ni vat |
-| Authentication | Tu kon che verify karvu |
-| Authorization | Tane permission che shu karva ni |
-| Token | Temporary ID card (digital) |
+| Term | Simple Meaning |
+|------|----------------|
+| Frontend | What user sees (Website UI) |
+| Backend | Logic running on server |
+| Database | Where data is stored |
+| API | Communication between Frontend and Backend |
+| Authentication | Verifying who you are |
+| Authorization | What you are allowed to do |
+| Token | Digital temporary ID card |
 | WebSocket | Real-time connection |
-| CRUD | Create, Read, Update, Delete |
-| ORM | Database sathe easy vat |
-| Environment Variables | Secret settings |
-| Deployment | Live karvu website |
+| CRUD | Create, Read, Update, Delete operations |
+| ORM | Easy way to talk to database |
+| Environment Variables | Secret settings stored separately |
+| Deployment | Making website live on internet |
+| Hashing | Converting password to unreadable format |
+| Encryption | Protecting data so only intended person can read |
+| Middleware | Code that runs between request and response |
+| Session | Temporary storage for logged-in user |
+| Cache | Temporary storage for faster access |
+| Query | Question asked to database |
+| Schema | Structure/blueprint of database |
+| Migration | Changes made to database structure |
 
 ---
 
 ## 🎯 Success Criteria
 
-Tamaru project complete thase jyare:
+Your project is complete when:
 
-1.  ✅ User register/login kari shake
-2.  ✅ Cricket boxes browse kari shake
-3.  ✅ Online booking kari shake
-4.  ✅ Payment successful thay
-5.  ✅ Match request banavi/join kari shake
-6.  ✅ Chat kari shake
-7.  ✅ Owner dashboard kaam kare
-8.  ✅ Offline booking add thay
-9.  ✅ Real-time updates aave
-10. ✅ Website live hoy internet par
-
+1. ✅ User can register and login
+2. ✅ User can browse cricket boxes
+3. ✅ User can make online booking
+4. ✅ Payment works successfully
+5. ✅ User can create/join match requests
+6. ✅ User can chat with other players
+7. ✅ Owner dashboard works
+8. ✅ Offline booking can be added
+9. ✅ Real-time updates work
+10. ✅ Website is live on internet
 
 ---
 
-*MatchBox - Surat's First Cricket Box Booking Platform* 🏏
+**Read and understand all this first, then we will start coding together! Ask if you have any questions! 💪**
+
+---
+
+*CricZZ - Surat's First Cricket Box Booking Platform* 🏏
