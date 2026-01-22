@@ -1,0 +1,19 @@
+/* Google Fonts - must be first */
+@import url('https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800;900&display=swap');
+
+@import "tailwindcss";
+
+/* Theme Configuration - Tailwind v4 */
+@theme {
+    --color-primary: #13ec5b;
+    --color-background-light: #f6f8f6;
+    --color-background-dark: #102216;
+    --color-text-dark: #0d1b12;
+
+    --font-family-display: 'Lexend', sans-serif;
+}
+
+/* Base styles */
+body {
+    font-family: 'Lexend', sans-serif;
+}
