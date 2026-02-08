@@ -1,0 +1,631 @@
+# 🏏 Cricket Box (CricZZ) - Complete API & Database Structure
+
+## Overview
+
+Cricket Box is a platform for booking cricket box venues and finding players for matches. The backend is built with **FastAPI** and uses **MongoDB** (with Beanie ODM) for data storage.
+
+---
+
+## 📊 Database Structure (MongoDB Collections)
+
+### 1️⃣ **users** Collection
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `_id` | ObjectId | Primary key |
+| `name` | string | User's full name (2-100 chars) |
+| `email` | string | Unique email address |
+| `phone` | string | Phone number (10-15 chars) |
+| `password_hash` | string | Hashed password |
+| `profile_photo` | string? | S3 URL for profile image |
+| [role](file:///d:/self-learn/Cricket_Box/criczz/backend/app/api/v1/endpoints/admin.py#89-103) | enum | `player` / [owner](file:///d:/self-learn/Cricket_Box/criczz/backend/app/api/v1/endpoints/reviews.py#124-142) / `admin` |
+| `skill_level` | enum? | `beginner` / `intermediate` / `advanced` / `professional` |
+| [area](file:///d:/self-learn/Cricket_Box/criczz/backend/app/api/v1/endpoints/cricket_boxes.py#76-86) | string? | Location area (Vesu, Adajan, etc.) |
+| `preferred_time` | string? | Morning, Evening, etc. |
+| `total_matches_played` | int | Stats - matches count |
+| `rating` | float | User rating (0-5) |
+| `total_ratings` | int | Number of ratings received |
+| `is_active` | bool | Account status |
+| `is_verified` | bool | Verification status |
+| `is_phone_verified` | bool | Phone OTP verified |
+| `is_email_verified` | bool | Email verified |
+| `otp_code` | string? | Current OTP |
+| `otp_expiry` | datetime? | OTP expiration time |
+| [refresh_token](file:///d:/self-learn/Cricket_Box/criczz/backend/app/api/v1/endpoints/auth.py#85-95) | string? | JWT refresh token |
+| `created_at` | datetime | Account creation time |
+| `updated_at` | datetime | Last update time |
+| `last_login` | datetime? | Last login timestamp |
+
+---
+
+### 2️⃣ **cricket_boxes** Collection
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `_id` | ObjectId | Primary key |
+| `name` | string | Box name (3-200 chars) |
+| `description` | string? | Description (max 1000 chars) |
+| `address` | string | Full address |
+| [area](file:///d:/self-learn/Cricket_Box/criczz/backend/app/api/v1/endpoints/cricket_boxes.py#76-86) | string | Area (Vesu, Adajan, Varachha, etc.) |
+| `city` | string | City (default: Surat) |
+| `pincode` | string | 6-digit pincode |
+| `latitude` | float? | GPS latitude |
+| `longitude` | float? | GPS longitude |
+| `google_maps_url` | string? | Google Maps link |
+| `price_per_hour` | float | Weekday price (₹) |
+| `weekend_price_per_hour` | float? | Weekend price (₹) |
+| `opening_time` | string | Format: "HH:MM" |
+| `closing_time` | string | Format: "HH:MM" |
+| `slot_duration_minutes` | int | Default: 60 minutes |
+| `box_type` | enum | `indoor` / `outdoor` / `semi_indoor` |
+| `ground_size` | string? | e.g., "30x40 feet" |
+| `pitch_type` | string? | Turf, Matting, Cement |
+| `max_players` | int | Maximum capacity |
+| `facilities` | array | `parking`, `lights`, `washroom`, `changing_room`, `drinking_water`, `ac_waiting`, `cctv`, `first_aid`, `equipment_rental`, `canteen` |
+| `photos` | array | S3 URLs for photos |
+| `cover_photo` | string? | Main display photo |
+| `video_url` | string? | Video tour URL |
+| `owner_id` | string | Reference to User |
+| `owner_name` | string? | Denormalized owner name |
+| `owner_phone` | string? | Denormalized owner phone |
+| `rating` | float | Average rating (0-5) |
+| `total_reviews` | int | Review count |
+| `total_bookings` | int | Booking count |
+| `subscription_plan` | enum | `free` / `basic` / [pro](file:///d:/self-learn/Cricket_Box/criczz/backend/app/api/v1/endpoints/admin.py#123-136) |
+| `is_featured` | bool | Featured status |
+| `featured_until` | datetime? | Feature expiry |
+| `is_active` | bool | Active status |
+| `is_approved` | bool | Admin approval status |
+| `created_at` | datetime | Creation time |
+| `updated_at` | datetime | Update time |
+
+---
+
+### 3️⃣ **bookings** Collection
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `_id` | ObjectId | Primary key |
+| `booking_number` | string | Format: CBK-2024-001234 |
+| `user_id` | string | Booked by (User ref) |
+| `user_name` | string? | Denormalized |
+| `user_phone` | string? | Denormalized |
+| `cricket_box_id` | string | Box reference |
+| `cricket_box_name` | string? | Denormalized |
+| `owner_id` | string | Box owner reference |
+| `booking_date` | date | Match date |
+| `start_time` | string | "18:00" format |
+| `end_time` | string | "19:00" format |
+| `duration_hours` | float | Duration in hours |
+| `base_amount` | float | Box rate (₹) |
+| `tax_amount` | float | Tax amount |
+| `platform_fee` | float | Platform commission |
+| `discount_amount` | float | Discount applied |
+| `total_amount` | float | Final amount |
+| `payment_status` | enum | [pending](file:///d:/self-learn/Cricket_Box/criczz/backend/app/api/v1/endpoints/admin.py#107-121) / `paid` / `failed` / `refunded` |
+| `payment_id` | string? | Razorpay payment ID |
+| `payment_order_id` | string? | Razorpay order ID |
+| `payment_method` | string? | UPI, Card, NetBanking |
+| `paid_at` | datetime? | Payment timestamp |
+| `booking_status` | enum | [pending](file:///d:/self-learn/Cricket_Box/criczz/backend/app/api/v1/endpoints/admin.py#107-121) / `confirmed` / `cancelled` / `completed` / `no_show` |
+| `booking_type` | enum | `online` / [offline](file:///d:/self-learn/Cricket_Box/criczz/backend/app/api/v1/endpoints/bookings.py#125-146) |
+| `match_request_id` | string? | If booked via player matching |
+| `user_notes` | string? | User's notes |
+| `owner_notes` | string? | Owner's notes |
+| `cancellation_reason` | string? | If cancelled |
+| `created_at` | datetime | Creation time |
+| `updated_at` | datetime | Update time |
+| `cancelled_at` | datetime? | Cancellation time |
+
+---
+
+### 4️⃣ **match_requests** Collection
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `_id` | ObjectId | Primary key |
+| `creator_id` | string | Created by (User ref) |
+| `creator_name` | string | Creator's name |
+| `creator_phone` | string? | Creator's phone |
+| `creator_photo` | string? | Creator's photo |
+| `creator_skill_level` | string? | Creator's skill |
+| `title` | string | Request title (5-200 chars) |
+| `description` | string? | Description (max 500 chars) |
+| `match_date` | date | Match date |
+| `preferred_time` | string | Morning/Evening/specific time |
+| `start_time` | string? | "18:00" format |
+| `end_time` | string? | "20:00" format |
+| `preferred_area` | string | Area preference |
+| `cricket_box_id` | string? | Selected box (optional) |
+| `cricket_box_name` | string? | Denormalized |
+| `players_needed` | int | Players required (1-11) |
+| `players_joined` | int | Accepted count |
+| `skill_level_required` | string? | Required skill level |
+| `join_requests` | array | Embedded JoinRequest objects |
+| `accepted_players` | array | User IDs of accepted players |
+| [status](file:///d:/self-learn/Cricket_Box/criczz/backend/app/api/v1/endpoints/admin.py#73-87) | enum | `open` / `closed` / `cancelled` / `expired` |
+| `chat_room_id` | string? | Group chat reference |
+| `booking_id` | string? | Final booking reference |
+| `created_at` | datetime | Creation time |
+| `updated_at` | datetime | Update time |
+| `expires_at` | datetime? | Expiration time |
+
+**Embedded JoinRequest:**
+| Field | Type | Description |
+|-------|------|-------------|
+| `user_id` | string | Requesting user |
+| `user_name` | string | User's name |
+| `user_phone` | string? | User's phone |
+| `user_photo` | string? | User's photo |
+| `skill_level` | string? | User's skill |
+| [message](file:///d:/self-learn/Cricket_Box/criczz/backend/app/api/v1/endpoints/chat.py#80-100) | string? | Join message |
+| [status](file:///d:/self-learn/Cricket_Box/criczz/backend/app/api/v1/endpoints/admin.py#73-87) | enum | [pending](file:///d:/self-learn/Cricket_Box/criczz/backend/app/api/v1/endpoints/admin.py#107-121) / `accepted` / `rejected` |
+| `requested_at` | datetime | Request time |
+| `responded_at` | datetime? | Response time |
+
+---
+
+### 5️⃣ **conversations** Collection
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `_id` | ObjectId | Primary key |
+| `conversation_type` | enum | `direct` / `group` |
+| `participants` | array | Embedded Participant objects |
+| `participant_ids` | array | User IDs for quick lookup |
+| `title` | string? | Group name |
+| `match_request_id` | string? | If group chat for match |
+| `last_message` | string? | Preview text |
+| `last_message_at` | datetime? | Last message time |
+| `last_message_by` | string? | Last sender ID |
+| `message_count` | int | Total messages |
+| `is_active` | bool | Active status |
+| `created_at` | datetime | Creation time |
+| `updated_at` | datetime | Update time |
+
+---
+
+### 6️⃣ **messages** Collection
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `_id` | ObjectId | Primary key |
+| `conversation_id` | string | Conversation reference |
+| `sender_id` | string | Sender user ID |
+| `sender_name` | string | Sender's name |
+| `sender_photo` | string? | Sender's photo |
+| `message_type` | enum | `text` / [image](file:///d:/self-learn/Cricket_Box/criczz/backend/app/api/v1/endpoints/upload.py#66-78) / `system` |
+| `content` | string | Message content (1-2000 chars) |
+| `image_url` | string? | For image messages |
+| `reply_to_message_id` | string? | Reply reference |
+| [status](file:///d:/self-learn/Cricket_Box/criczz/backend/app/api/v1/endpoints/admin.py#73-87) | enum | `sent` / `delivered` / [read](file:///d:/self-learn/Cricket_Box/criczz/backend/app/api/v1/endpoints/chat.py#136-152) |
+| `read_by` | array | User IDs who read |
+| `delivered_to` | array | User IDs who received |
+| `created_at` | datetime | Send time |
+| `updated_at` | datetime | Update time |
+| `edited_at` | datetime? | Edit time |
+| `is_deleted` | bool | Soft delete flag |
+| `deleted_at` | datetime? | Delete time |
+
+---
+
+### 7️⃣ **payments** Collection
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `_id` | ObjectId | Primary key |
+| `user_id` | string | Payer user ID |
+| `booking_id` | string | Booking reference |
+| `razorpay_order_id` | string | Razorpay order ID |
+| `razorpay_payment_id` | string? | Razorpay payment ID |
+| `razorpay_signature` | string? | Signature for verification |
+| `amount` | float | Amount in INR |
+| `currency` | string | Default: "INR" |
+| `platform_commission` | float | Platform fee |
+| `owner_amount` | float | Amount for owner |
+| [status](file:///d:/self-learn/Cricket_Box/criczz/backend/app/api/v1/endpoints/admin.py#73-87) | enum | `created` / `authorized` / `captured` / `failed` / `refunded` |
+| `payment_method` | enum? | `upi` / `card` / `netbanking` / `wallet` |
+| `error_code` | string? | If failed |
+| `error_description` | string? | Error details |
+| `refund_id` | string? | Refund ID |
+| `refund_amount` | float? | Refund amount |
+| `refunded_at` | datetime? | Refund time |
+| `refund_reason` | string? | Refund reason |
+| `created_at` | datetime | Creation time |
+| `updated_at` | datetime | Update time |
+| `paid_at` | datetime? | Payment time |
+
+---
+
+### 8️⃣ **reviews** Collection
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `_id` | ObjectId | Primary key |
+| `user_id` | string | Reviewer user ID |
+| `user_name` | string | Reviewer name |
+| `user_photo` | string? | Reviewer photo |
+| `cricket_box_id` | string | Box reference |
+| `cricket_box_name` | string? | Denormalized |
+| `booking_id` | string? | Related booking |
+| `rating` | float | 1-5 stars |
+| `title` | string? | Review title (max 100 chars) |
+| `review_text` | string? | Review content (max 1000 chars) |
+| `cleanliness_rating` | float? | Aspect rating |
+| `facilities_rating` | float? | Aspect rating |
+| `value_for_money_rating` | float? | Aspect rating |
+| `staff_behavior_rating` | float? | Aspect rating |
+| `photos` | array | Review photos (S3 URLs) |
+| `owner_response` | string? | Owner's reply |
+| `owner_responded_at` | datetime? | Reply time |
+| `is_verified` | bool | Verified booking exists |
+| `is_visible` | bool | Visibility status |
+| `helpful_count` | int | Helpful votes |
+| `helpful_by` | array | User IDs who voted |
+| `created_at` | datetime | Creation time |
+| `updated_at` | datetime | Update time |
+
+---
+
+### 9️⃣ **notifications** Collection
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `_id` | ObjectId | Primary key |
+| `user_id` | string | Recipient user ID |
+| `notification_type` | enum | `booking_confirmed`, `booking_cancelled`, `booking_reminder`, `payment_success`, `payment_failed`, `match_request_new`, `match_request_join`, `match_request_accepted`, `match_request_rejected`, `new_message`, `new_review`, `system` |
+| `title` | string | Notification title |
+| [message](file:///d:/self-learn/Cricket_Box/criczz/backend/app/api/v1/endpoints/chat.py#80-100) | string | Notification content |
+| `related_id` | string? | Related entity ID |
+| `related_type` | string? | Entity type (booking, match_request, etc.) |
+| `action_url` | string? | Deep link URL |
+| `is_read` | bool | Read status |
+| `read_at` | datetime? | Read time |
+| `created_at` | datetime | Creation time |
+
+---
+
+### 🔟 **favorites** Collection
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `_id` | ObjectId | Primary key |
+| `user_id` | string | User reference |
+| `cricket_box_id` | string | Favorited box |
+| `cricket_box_name` | string? | Denormalized |
+| `cricket_box_photo` | string? | Denormalized |
+| `cricket_box_area` | string? | Denormalized |
+| `cricket_box_price` | float? | Denormalized |
+| `cricket_box_rating` | float? | Denormalized |
+| `created_at` | datetime | Creation time |
+
+---
+
+## 🌐 API Endpoints
+
+Base URL: `/api/v1`
+
+---
+
+### 🔐 Authentication (`/auth`)
+
+| Method | Endpoint | Description | Auth |
+|--------|----------|-------------|------|
+| `POST` | `/register` | Register new user | ❌ |
+| `POST` | `/login` | Login with email/password | ❌ |
+| `POST` | `/send-otp` | Send OTP to phone | ❌ |
+| `POST` | `/verify-otp` | Verify OTP | ❌ |
+| `POST` | `/refresh-token` | Refresh access token | ❌ |
+| `POST` | `/logout` | Logout user | ✅ |
+| `POST` | `/forgot-password` | Send reset link | ❌ |
+| `POST` | `/reset-password` | Reset password | ❌ |
+| `GET` | `/me` | Get current user info | ✅ |
+
+---
+
+### 👤 Users (`/users`)
+
+| Method | Endpoint | Description | Auth |
+|--------|----------|-------------|------|
+| `GET` | `/profile` | Get my profile | ✅ |
+| `PUT` | `/profile` | Update my profile | ✅ |
+| `GET` | `/{user_id}` | Get user's public profile | ❌ |
+| `GET` | `/` | List users (with filters) | ❌ |
+| `DELETE` | `/profile` | Delete my account | ✅ |
+
+---
+
+### 🏟️ Cricket Boxes (`/cricket-boxes`)
+
+| Method | Endpoint | Description | Auth |
+|--------|----------|-------------|------|
+| `GET` | `/` | List all boxes (with filters) | ❌ |
+| `GET` | `/featured` | Get featured boxes | ❌ |
+| `GET` | `/areas` | Get all unique areas | ❌ |
+| `GET` | `/{box_id}` | Get box details | ❌ |
+| `POST` | `/` | Create new box | ✅ Owner |
+| `PUT` | `/{box_id}` | Update box | ✅ Owner |
+| `DELETE` | `/{box_id}` | Delete box | ✅ Owner |
+
+**Query Parameters for listing:**
+- `area` - Filter by area
+- `min_price`, `max_price` - Price range
+- `box_type` - indoor/outdoor/semi_indoor
+- `facilities` - Comma-separated facilities
+- `min_rating` - Minimum rating
+- `search` - Search by name
+- `sort_by` - rating/price/name
+- `page`, `limit` - Pagination
+
+---
+
+### 📅 Bookings (`/bookings`)
+
+| Method | Endpoint | Description | Auth |
+|--------|----------|-------------|------|
+| `GET` | `/slots/{box_id}` | Check slot availability | ❌ |
+| `POST` | `/` | Create booking | ✅ |
+| `GET` | `/my-bookings` | Get my bookings | ✅ |
+| `GET` | `/{booking_id}` | Get booking details | ✅ |
+| `POST` | `/{booking_id}/cancel` | Cancel booking | ✅ |
+| `POST` | `/offline` | Create offline booking | ✅ Owner |
+| `GET` | `/box/{box_id}` | Get box bookings | ✅ Owner |
+
+---
+
+### 🤝 Player Matching (`/match-requests`)
+
+| Method | Endpoint | Description | Auth |
+|--------|----------|-------------|------|
+| `GET` | `/` | List open match requests | ❌ |
+| `POST` | `/` | Create match request | ✅ |
+| `GET` | `/my-requests` | Get my created requests | ✅ |
+| `GET` | `/my-joins` | Get requests I joined | ✅ |
+| `GET` | `/{request_id}` | Get request details | ❌ |
+| `PUT` | `/{request_id}` | Update request | ✅ Creator |
+| `DELETE` | `/{request_id}` | Delete request | ✅ Creator |
+| `POST` | `/{request_id}/join` | Request to join | ✅ |
+| `POST` | `/{request_id}/accept/{user_id}` | Accept player | ✅ Creator |
+| `POST` | `/{request_id}/reject/{user_id}` | Reject player | ✅ Creator |
+| `POST` | `/{request_id}/withdraw` | Withdraw my join | ✅ |
+
+---
+
+### 💬 Chat (`/chat`)
+
+| Method | Endpoint | Description | Auth |
+|--------|----------|-------------|------|
+| `GET` | `/conversations` | Get my conversations | ✅ |
+| `POST` | `/conversations` | Create conversation | ✅ |
+| `GET` | `/conversations/{id}` | Get conversation details | ✅ |
+| `GET` | `/conversations/{id}/messages` | Get messages | ✅ |
+| `POST` | `/conversations/{id}/messages` | Send message | ✅ |
+| `POST` | `/conversations/{id}/read` | Mark as read | ✅ |
+| `DELETE` | `/messages/{message_id}` | Delete message | ✅ |
+| `WS` | `/ws/{token}` | WebSocket connection | ✅ Token |
+
+---
+
+### ⭐ Reviews (`/reviews`)
+
+| Method | Endpoint | Description | Auth |
+|--------|----------|-------------|------|
+| `GET` | `/box/{box_id}` | Get box reviews | ❌ |
+| `POST` | `/` | Create review | ✅ |
+| `PUT` | `/{review_id}` | Update my review | ✅ |
+| `DELETE` | `/{review_id}` | Delete my review | ✅ |
+| `POST` | `/{review_id}/helpful` | Mark as helpful | ✅ |
+| `POST` | `/{review_id}/respond` | Owner response | ✅ Owner |
+
+---
+
+### ❤️ Favorites (`/favorites`)
+
+| Method | Endpoint | Description | Auth |
+|--------|----------|-------------|------|
+| `GET` | `/` | Get my favorites | ✅ |
+| `POST` | `/{box_id}` | Add to favorites | ✅ |
+| `DELETE` | `/{box_id}` | Remove from favorites | ✅ |
+| `GET` | `/check/{box_id}` | Check if favorited | ✅ |
+
+---
+
+### 💳 Payments (`/payments`)
+
+| Method | Endpoint | Description | Auth |
+|--------|----------|-------------|------|
+| `POST` | `/create-order` | Create Razorpay order | ✅ |
+| `POST` | `/verify` | Verify payment | ✅ |
+| `GET` | `/{payment_id}` | Get payment details | ✅ |
+| `POST` | `/webhook` | Razorpay webhook | ❌ |
+| `POST` | `/refund` | Request refund | ✅ |
+
+---
+
+### 🔔 Notifications (`/notifications`)
+
+| Method | Endpoint | Description | Auth |
+|--------|----------|-------------|------|
+| `GET` | `/` | Get my notifications | ✅ |
+| `POST` | `/{id}/read` | Mark as read | ✅ |
+| `POST` | `/read-all` | Mark all as read | ✅ |
+| `DELETE` | `/{id}` | Delete notification | ✅ |
+
+---
+
+### 📤 Upload (`/upload`)
+
+| Method | Endpoint | Description | Auth |
+|--------|----------|-------------|------|
+| `POST` | `/image` | Upload single image | ✅ |
+| `POST` | `/images` | Upload multiple (max 10) | ✅ |
+| `DELETE` | `/` | Delete image | ✅ |
+
+---
+
+### 📊 Owner Dashboard (`/owner`)
+
+| Method | Endpoint | Description | Auth |
+|--------|----------|-------------|------|
+| `GET` | `/dashboard` | Get dashboard stats | ✅ Owner |
+| `GET` | `/my-boxes` | Get my cricket boxes | ✅ Owner |
+| `GET` | `/revenue` | Get revenue data | ✅ Owner |
+| `GET` | `/today-schedule/{box_id}` | Today's schedule | ✅ Owner |
+| `POST` | `/upgrade-subscription` | Upgrade plan | ✅ Owner |
+
+---
+
+### ⚙️ Admin (`/admin`)
+
+| Method | Endpoint | Description | Auth |
+|--------|----------|-------------|------|
+| `GET` | `/stats` | Get platform stats | ✅ Admin |
+| `GET` | `/users` | List all users | ✅ Admin |
+| `PUT` | `/users/{id}/status` | Update user status | ✅ Admin |
+| `PUT` | `/users/{id}/role` | Update user role | ✅ Admin |
+| `GET` | `/boxes/pending` | Get pending approvals | ✅ Admin |
+| `POST` | `/boxes/{id}/approve` | Approve box | ✅ Admin |
+| `POST` | `/boxes/{id}/reject` | Reject box | ✅ Admin |
+| `POST` | `/boxes/{id}/feature` | Feature a box | ✅ Admin |
+| `GET` | `/revenue` | Get revenue report | ✅ Admin |
+
+---
+
+## 🔐 Authentication Flow
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant Frontend
+    participant Backend
+    participant MongoDB
+
+    User->>Frontend: Register/Login
+    Frontend->>Backend: POST /auth/register or /login
+    Backend->>MongoDB: Create/Verify User
+    MongoDB-->>Backend: User data
+    Backend-->>Frontend: JWT Access + Refresh Token
+    Frontend->>Frontend: Store tokens
+    
+    Note over Frontend,Backend: For protected routes
+    Frontend->>Backend: Request with Bearer Token
+    Backend->>Backend: Verify JWT
+    Backend-->>Frontend: Response
+```
+
+---
+
+## 💰 Payment Flow (Razorpay)
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant Frontend
+    participant Backend
+    participant Razorpay
+
+    User->>Frontend: Select slot & book
+    Frontend->>Backend: POST /payments/create-order
+    Backend->>Razorpay: Create Order
+    Razorpay-->>Backend: Order ID
+    Backend-->>Frontend: Order details
+    
+    Frontend->>Razorpay: Open Razorpay Checkout
+    User->>Razorpay: Complete payment
+    Razorpay-->>Frontend: Payment response
+    
+    Frontend->>Backend: POST /payments/verify
+    Backend->>Backend: Verify signature
+    Backend->>MongoDB: Confirm booking
+    Backend-->>Frontend: Success
+```
+
+---
+
+## 🤝 Player Matching Flow
+
+```mermaid
+sequenceDiagram
+    participant Creator
+    participant Player
+    participant Backend
+    participant Chat
+
+    Creator->>Backend: POST /match-requests (Create)
+    Note over Backend: Request is OPEN
+    
+    Player->>Backend: GET /match-requests (Browse)
+    Player->>Backend: POST /{id}/join
+    Note over Backend: Join request PENDING
+    
+    Creator->>Backend: POST /{id}/accept/{user_id}
+    Backend->>Chat: Create group chat
+    Backend->>Player: Send notification
+    
+    Note over Creator,Player: Both in group chat
+```
+
+---
+
+## 📁 Project Structure
+
+```
+backend/
+├── app/
+│   ├── api/
+│   │   ├── deps.py              # Dependencies (auth, etc.)
+│   │   └── v1/
+│   │       ├── __init__.py      # Router configuration
+│   │       └── endpoints/
+│   │           ├── auth.py
+│   │           ├── users.py
+│   │           ├── cricket_boxes.py
+│   │           ├── bookings.py
+│   │           ├── match_requests.py
+│   │           ├── chat.py
+│   │           ├── reviews.py
+│   │           ├── favorites.py
+│   │           ├── payments.py
+│   │           ├── notifications.py
+│   │           ├── upload.py
+│   │           ├── owner.py
+│   │           └── admin.py
+│   ├── core/
+│   │   └── config.py            # App configuration
+│   ├── models/                  # MongoDB/Beanie models
+│   │   ├── user.py
+│   │   ├── cricket_box.py
+│   │   ├── booking.py
+│   │   ├── match_request.py
+│   │   ├── message.py
+│   │   ├── notification.py
+│   │   ├── payment.py
+│   │   ├── review.py
+│   │   └── favorite.py
+│   ├── schemas/                 # Pydantic schemas
+│   ├── services/                # Business logic
+│   └── main.py                  # FastAPI app entry
+└── requirements.txt
+```
+
+---
+
+## 📊 Summary
+
+| Category | Count |
+|----------|-------|
+| **Database Collections** | 10 |
+| **API Modules** | 13 |
+| **Total Endpoints** | 70+ |
+| **WebSocket Endpoints** | 1 |
+
+### Key Features:
+- ✅ JWT-based authentication with OTP verification
+- ✅ Role-based access (Player, Owner, Admin)
+- ✅ Real-time chat with WebSocket
+- ✅ Razorpay payment integration
+- ✅ Player matching / Find team feature
+- ✅ S3 image upload
+- ✅ Push notifications
+- ✅ Owner dashboard with analytics
+- ✅ Admin panel for platform management
