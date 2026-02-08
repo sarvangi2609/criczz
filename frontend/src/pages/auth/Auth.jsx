@@ -2,6 +2,23 @@ import { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import stadiumBanner from '../../assets/stadium_banner.png';
 
+// Surat areas for player matching
+const SURAT_AREAS = [
+    { id: '', name: 'Select your area' },
+    { id: 'vesu', name: 'Vesu' },
+    { id: 'adajan', name: 'Adajan' },
+    { id: 'piplod', name: 'Piplod' },
+    { id: 'varachha', name: 'Varachha' },
+    { id: 'citylight', name: 'City Light' },
+    { id: 'althan', name: 'Althan' },
+    { id: 'katargam', name: 'Katargam' },
+    { id: 'udhna', name: 'Udhna' },
+    { id: 'athwa', name: 'Athwa' },
+    { id: 'magdalla', name: 'Magdalla' },
+    { id: 'pal', name: 'Pal' },
+    { id: 'dumas', name: 'Dumas' },
+];
+
 const Auth = () => {
     const location = useLocation();
     const navigate = useNavigate();
@@ -13,12 +30,26 @@ const Auth = () => {
 
     const [activeTab, setActiveTab] = useState(getInitialTab());
     const [phone, setPhone] = useState('');
-    const [otp, setOtp] = useState(['', '', '', '', '', '']);
+    const [isLoading, setIsLoading] = useState(false);
 
     const [signupData, setSignupData] = useState({
+        firstName: '',
+        lastName: '',
         email: '',
-        phone: ''
+        phone: '',
+        area: ''
     });
+
+    // Generate username from name or email
+    const generateUsername = () => {
+        if (signupData.firstName || signupData.lastName) {
+            return `${signupData.firstName} ${signupData.lastName}`.trim();
+        }
+        if (signupData.email) {
+            return signupData.email.charAt(0).toUpperCase();
+        }
+        return 'U';
+    };
 
     useEffect(() => {
         setActiveTab(getInitialTab());
@@ -32,34 +63,51 @@ const Auth = () => {
         }
     };
 
-    const handleOtpChange = (index, value) => {
-        if (value.length <= 1 && /^\d*$/.test(value)) {
-            const newOtp = [...otp];
-            newOtp[index] = value;
-            setOtp(newOtp);
+    const validatePhone = (phoneNumber) => {
+        return /^[6-9]\d{9}$/.test(phoneNumber);
+    };
 
-            if (value && index < 5) {
-                const nextInput = document.getElementById(`otp-${index + 1}`);
-                if (nextInput) nextInput.focus();
+    const handleSendOTP = (e) => {
+        e.preventDefault();
+
+        const phoneToValidate = activeTab === 'login' ? phone : signupData.phone;
+
+        if (!validatePhone(phoneToValidate)) {
+            alert('Please enter a valid 10-digit mobile number');
+            return;
+        }
+
+        if (activeTab === 'signup') {
+            if (!signupData.email) {
+                alert('Please enter your email');
+                return;
+            }
+            if (!signupData.area) {
+                alert('Please select your area');
+                return;
             }
         }
-    };
 
-    const handleOtpKeyDown = (index, e) => {
-        if (e.key === 'Backspace' && !otp[index] && index > 0) {
-            const prevInput = document.getElementById(`otp-${index - 1}`);
-            if (prevInput) prevInput.focus();
-        }
-    };
+        setIsLoading(true);
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        console.log('Submitting:', {
-            activeTab,
-            phone: activeTab === 'login' ? phone : signupData.phone,
-            otp: otp.join(''),
-            ...(activeTab === 'signup' && signupData)
-        });
+        // Simulate OTP send delay
+        setTimeout(() => {
+            setIsLoading(false);
+            // Navigate to OTP page with user data
+            navigate('/verify-otp', {
+                state: {
+                    phone: phoneToValidate,
+                    authType: activeTab,
+                    ...(activeTab === 'signup' && {
+                        firstName: signupData.firstName,
+                        lastName: signupData.lastName,
+                        username: generateUsername(),
+                        email: signupData.email,
+                        area: signupData.area
+                    })
+                }
+            });
+        }, 1000);
     };
 
     return (
@@ -146,15 +194,17 @@ const Auth = () => {
                             </button>
                         </div>
 
-                        <form onSubmit={handleSubmit}>
+                        <form onSubmit={handleSendOTP}>
                             {activeTab === 'login' ? (
                                 <>
                                     <h2 className="text-xl sm:text-2xl font-bold text-[#0d1b12] mb-1">Welcome Back</h2>
-                                    <p className="text-sm text-[#6b7c72] mb-5">Enter your mobile number to access your account</p>
+                                    <p className="text-sm text-[#6b7c72] mb-5">Enter your mobile number to receive OTP</p>
 
                                     {/* Phone Input */}
-                                    <div className="mb-4">
-                                        <label className="block text-xs font-semibold text-[#0d1b12] mb-1.5">Mobile Number</label>
+                                    <div className="mb-5">
+                                        <label className="block text-xs font-semibold text-[#0d1b12] mb-1.5">
+                                            Mobile Number <span className="text-red-500">*</span>
+                                        </label>
                                         <div className="flex items-center border-2 border-gray-200 rounded-xl overflow-hidden focus-within:border-[#13ec5b] focus-within:ring-2 focus-within:ring-[#13ec5b]/20 transition-all">
                                             <span className="px-3 sm:px-4 py-3 bg-[#f6f8f6] text-[#0d1b12] font-medium text-sm border-r-2 border-gray-200">+91</span>
                                             <input
@@ -162,48 +212,34 @@ const Auth = () => {
                                                 className="flex-1 px-3 sm:px-4 py-3 text-sm outline-none bg-transparent"
                                                 placeholder="98765 43210"
                                                 value={phone}
-                                                onChange={(e) => setPhone(e.target.value)}
+                                                onChange={(e) => setPhone(e.target.value.replace(/\D/g, ''))}
                                                 maxLength={10}
                                             />
                                         </div>
                                     </div>
 
-                                    {/* OTP Input */}
-                                    <div className="mb-4">
-                                        <div className="flex justify-between items-center mb-1.5">
-                                            <label className="text-xs font-semibold text-[#0d1b12]">OTP Code</label>
-                                            <a href="#" className="text-xs font-medium text-[#13ec5b] hover:underline">Resend OTP</a>
-                                        </div>
-                                        <div className="flex gap-2 items-center">
-                                            <div className="flex gap-1.5 sm:gap-2 flex-1">
-                                                {otp.map((digit, index) => (
-                                                    <input
-                                                        key={index}
-                                                        id={`otp-${index}`}
-                                                        type="text"
-                                                        className="w-9 h-11 sm:w-10 sm:h-12 border-2 border-gray-200 rounded-lg text-center text-lg font-semibold focus:border-[#13ec5b] focus:ring-2 focus:ring-[#13ec5b]/20 outline-none transition-all"
-                                                        value={digit}
-                                                        onChange={(e) => handleOtpChange(index, e.target.value)}
-                                                        onKeyDown={(e) => handleOtpKeyDown(index, e)}
-                                                        maxLength={1}
-                                                    />
-                                                ))}
-                                            </div>
-                                            <button type="button" className="w-11 h-11 sm:w-12 sm:h-12 bg-[#13ec5b] rounded-xl flex items-center justify-center hover:scale-105 hover:shadow-lg hover:shadow-[#13ec5b]/40 transition-all flex-shrink-0">
-                                                <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" className="w-5 h-5">
-                                                    <path d="M9 12l2 2 4-4" strokeLinecap="round" strokeLinejoin="round" />
-                                                    <circle cx="12" cy="12" r="10" />
+                                    {/* Send OTP Button */}
+                                    <button
+                                        type="submit"
+                                        disabled={isLoading}
+                                        className="w-full py-3.5 bg-gradient-to-r from-[#13ec5b] to-[#0fd650] rounded-xl text-white font-semibold flex items-center justify-center gap-2 hover:shadow-lg hover:shadow-[#13ec5b]/40 hover:-translate-y-0.5 transition-all disabled:opacity-70 disabled:cursor-not-allowed"
+                                    >
+                                        {isLoading ? (
+                                            <>
+                                                <svg className="animate-spin w-5 h-5" viewBox="0 0 24 24" fill="none">
+                                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                                                 </svg>
-                                            </button>
-                                        </div>
-                                    </div>
-
-                                    {/* Login Button */}
-                                    <button type="submit" className="w-full py-3.5 bg-gradient-to-r from-[#13ec5b] to-[#0fd650] rounded-xl text-white font-semibold flex items-center justify-center gap-2 hover:shadow-lg hover:shadow-[#13ec5b]/40 hover:-translate-y-0.5 transition-all mt-5">
-                                        Login
-                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4">
-                                            <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
-                                        </svg>
+                                                Sending OTP...
+                                            </>
+                                        ) : (
+                                            <>
+                                                Send OTP
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4">
+                                                    <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
+                                                </svg>
+                                            </>
+                                        )}
                                     </button>
 
                                     <p className="text-center mt-4 text-xs text-[#6b7c72]">
@@ -219,9 +255,39 @@ const Auth = () => {
                                     <h2 className="text-xl sm:text-2xl font-bold text-[#0d1b12] mb-1">Create Account</h2>
                                     <p className="text-sm text-[#6b7c72] mb-5">Join the cricket community today</p>
 
+                                    {/* Name Fields */}
+                                    <div className="grid grid-cols-2 gap-3 mb-4">
+                                        <div>
+                                            <label className="block text-xs font-semibold text-[#0d1b12] mb-1.5">
+                                                First Name
+                                            </label>
+                                            <input
+                                                type="text"
+                                                className="w-full px-3 sm:px-4 py-3 text-sm border-2 border-gray-200 rounded-xl outline-none focus:border-[#13ec5b] focus:ring-2 focus:ring-[#13ec5b]/20 transition-all"
+                                                placeholder="Virat"
+                                                value={signupData.firstName}
+                                                onChange={(e) => setSignupData({ ...signupData, firstName: e.target.value })}
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-xs font-semibold text-[#0d1b12] mb-1.5">
+                                                Last Name
+                                            </label>
+                                            <input
+                                                type="text"
+                                                className="w-full px-3 sm:px-4 py-3 text-sm border-2 border-gray-200 rounded-xl outline-none focus:border-[#13ec5b] focus:ring-2 focus:ring-[#13ec5b]/20 transition-all"
+                                                placeholder="Kohli"
+                                                value={signupData.lastName}
+                                                onChange={(e) => setSignupData({ ...signupData, lastName: e.target.value })}
+                                            />
+                                        </div>
+                                    </div>
+
                                     {/* Email Input */}
                                     <div className="mb-4">
-                                        <label className="block text-xs font-semibold text-[#0d1b12] mb-1.5">Email</label>
+                                        <label className="block text-xs font-semibold text-[#0d1b12] mb-1.5">
+                                            Email <span className="text-red-500">*</span>
+                                        </label>
                                         <div className="flex items-center border-2 border-gray-200 rounded-xl overflow-hidden focus-within:border-[#13ec5b] focus-within:ring-2 focus-within:ring-[#13ec5b]/20 transition-all">
                                             <input
                                                 type="email"
@@ -235,7 +301,9 @@ const Auth = () => {
 
                                     {/* Phone Input */}
                                     <div className="mb-4">
-                                        <label className="block text-xs font-semibold text-[#0d1b12] mb-1.5">Mobile Number</label>
+                                        <label className="block text-xs font-semibold text-[#0d1b12] mb-1.5">
+                                            Mobile Number <span className="text-red-500">*</span>
+                                        </label>
                                         <div className="flex items-center border-2 border-gray-200 rounded-xl overflow-hidden focus-within:border-[#13ec5b] focus-within:ring-2 focus-within:ring-[#13ec5b]/20 transition-all">
                                             <span className="px-3 sm:px-4 py-3 bg-[#f6f8f6] text-[#0d1b12] font-medium text-sm border-r-2 border-gray-200">+91</span>
                                             <input
@@ -243,48 +311,63 @@ const Auth = () => {
                                                 className="flex-1 px-3 sm:px-4 py-3 text-sm outline-none bg-transparent"
                                                 placeholder="98765 43210"
                                                 value={signupData.phone}
-                                                onChange={(e) => setSignupData({ ...signupData, phone: e.target.value })}
+                                                onChange={(e) => setSignupData({ ...signupData, phone: e.target.value.replace(/\D/g, '') })}
                                                 maxLength={10}
                                             />
                                         </div>
                                     </div>
 
-                                    {/* OTP Input */}
-                                    <div className="mb-4">
-                                        <div className="flex justify-between items-center mb-1.5">
-                                            <label className="text-xs font-semibold text-[#0d1b12]">OTP Code</label>
-                                            <a href="#" className="text-xs font-medium text-[#13ec5b] hover:underline">Resend OTP</a>
-                                        </div>
-                                        <div className="flex gap-2 items-center">
-                                            <div className="flex gap-1.5 sm:gap-2 flex-1">
-                                                {otp.map((digit, index) => (
-                                                    <input
-                                                        key={index}
-                                                        id={`signup-otp-${index}`}
-                                                        type="text"
-                                                        className="w-9 h-11 sm:w-10 sm:h-12 border-2 border-gray-200 rounded-lg text-center text-lg font-semibold focus:border-[#13ec5b] focus:ring-2 focus:ring-[#13ec5b]/20 outline-none transition-all"
-                                                        value={digit}
-                                                        onChange={(e) => handleOtpChange(index, e.target.value)}
-                                                        onKeyDown={(e) => handleOtpKeyDown(index, e)}
-                                                        maxLength={1}
-                                                    />
+                                    {/* Area Selection */}
+                                    <div className="mb-5">
+                                        <label className="block text-xs font-semibold text-[#0d1b12] mb-1.5">
+                                            Your Area <span className="text-red-500">*</span>
+                                        </label>
+                                        <div className="relative">
+                                            <select
+                                                className="w-full px-3 sm:px-4 py-3 text-sm border-2 border-gray-200 rounded-xl bg-white focus:border-[#13ec5b] focus:ring-2 focus:ring-[#13ec5b]/20 outline-none transition-all appearance-none cursor-pointer"
+                                                value={signupData.area}
+                                                onChange={(e) => setSignupData({ ...signupData, area: e.target.value })}
+                                            >
+                                                {SURAT_AREAS.map(area => (
+                                                    <option key={area.id} value={area.id}>{area.name}</option>
                                                 ))}
-                                            </div>
-                                            <button type="button" className="w-11 h-11 sm:w-12 sm:h-12 bg-[#13ec5b] rounded-xl flex items-center justify-center hover:scale-105 hover:shadow-lg hover:shadow-[#13ec5b]/40 transition-all flex-shrink-0">
-                                                <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" className="w-5 h-5">
-                                                    <path d="M9 12l2 2 4-4" strokeLinecap="round" strokeLinejoin="round" />
-                                                    <circle cx="12" cy="12" r="10" />
+                                            </select>
+                                            <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
+                                                <svg viewBox="0 0 24 24" fill="#6b7c72" className="w-5 h-5">
+                                                    <path d="M7 10l5 5 5-5z" />
                                                 </svg>
-                                            </button>
+                                            </div>
                                         </div>
+                                        <p className="text-[10px] text-[#6b7c72] mt-1 flex items-center gap-1">
+                                            <svg viewBox="0 0 24 24" fill="#13ec5b" className="w-3 h-3">
+                                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z" />
+                                            </svg>
+                                            Used for Player Matching notifications
+                                        </p>
                                     </div>
 
-                                    {/* Signup Button */}
-                                    <button type="submit" className="w-full py-3.5 bg-gradient-to-r from-[#13ec5b] to-[#0fd650] rounded-xl text-white font-semibold flex items-center justify-center gap-2 hover:shadow-lg hover:shadow-[#13ec5b]/40 hover:-translate-y-0.5 transition-all mt-5">
-                                        Sign Up
-                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4">
-                                            <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
-                                        </svg>
+                                    {/* Send OTP Button */}
+                                    <button
+                                        type="submit"
+                                        disabled={isLoading}
+                                        className="w-full py-3.5 bg-gradient-to-r from-[#13ec5b] to-[#0fd650] rounded-xl text-white font-semibold flex items-center justify-center gap-2 hover:shadow-lg hover:shadow-[#13ec5b]/40 hover:-translate-y-0.5 transition-all disabled:opacity-70 disabled:cursor-not-allowed"
+                                    >
+                                        {isLoading ? (
+                                            <>
+                                                <svg className="animate-spin w-5 h-5" viewBox="0 0 24 24" fill="none">
+                                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                                                </svg>
+                                                Sending OTP...
+                                            </>
+                                        ) : (
+                                            <>
+                                                Send OTP
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4">
+                                                    <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
+                                                </svg>
+                                            </>
+                                        )}
                                     </button>
 
                                     <p className="text-center mt-4 text-xs text-[#6b7c72]">

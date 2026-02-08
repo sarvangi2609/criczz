@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 
@@ -158,10 +158,10 @@ const BoxDetails = () => {
     const { slug } = useParams();
     const box = BOXES_DATA[slug] || BOXES_DATA['lords-box-cricket'];
 
+    const navigate = useNavigate();
     const [selectedImage, setSelectedImage] = useState(0);
-    const [selectedDate, setSelectedDate] = useState(24);
+    const [selectedDate, setSelectedDate] = useState(new Date().getDate());
     const [selectedSlot, setSelectedSlot] = useState('6:00 PM');
-    const [duration, setDuration] = useState(1);
 
     // Generate next 7 dates
     const dates = Array.from({ length: 7 }, (_, i) => {
@@ -173,7 +173,33 @@ const BoxDetails = () => {
         };
     });
 
-    const totalAmount = box.pricePerHour * duration;
+    // Get full date object for selected date
+    const getFullSelectedDate = () => {
+        const today = new Date();
+        const dateIndex = dates.findIndex(d => d.date === selectedDate);
+        const fullDate = new Date();
+        fullDate.setDate(today.getDate() + dateIndex);
+        return fullDate;
+    };
+
+    const handleBookNow = () => {
+        const fullDate = getFullSelectedDate();
+        navigate('/confirm-booking', {
+            state: {
+                box: {
+                    id: box.id,
+                    name: box.name,
+                    slug: box.slug,
+                    image: box.images[0],
+                    pricePerHour: box.pricePerHour,
+                    location: box.location,
+                    fullAddress: box.fullAddress,
+                },
+                selectedDate: fullDate.toISOString(),
+                selectedSlot: selectedSlot,
+            }
+        });
+    };
 
     return (
         <div className="min-h-screen bg-[#f6f8f6]">
@@ -414,47 +440,11 @@ const BoxDetails = () => {
                                 </div>
                             </div>
 
-                            {/* Duration */}
-                            <div className="mb-5">
-                                <div className="flex justify-between items-center mb-2">
-                                    <label className="text-xs font-semibold text-[#0d1b12]">Hours</label>
-                                    <span className="text-lg font-bold text-[#0d1b12]">{duration}hr</span>
-                                </div>
-                                <div className="flex items-center gap-3">
-                                    <button
-                                        className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center text-xl font-bold text-[#6b7c72] hover:bg-gray-200 transition-colors disabled:opacity-50"
-                                        onClick={() => setDuration(Math.max(1, duration - 1))}
-                                        disabled={duration <= 1}
-                                    >
-                                        -
-                                    </button>
-                                    <div className="flex-1 h-2 bg-gray-100 rounded-full">
-                                        <div className="h-full bg-[#13ec5b] rounded-full transition-all" style={{ width: `${(duration / 5) * 100}%` }} />
-                                    </div>
-                                    <button
-                                        className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center text-xl font-bold text-[#6b7c72] hover:bg-gray-200 transition-colors disabled:opacity-50"
-                                        onClick={() => setDuration(Math.min(5, duration + 1))}
-                                        disabled={duration >= 5}
-                                    >
-                                        +
-                                    </button>
-                                </div>
-                            </div>
-
-                            {/* Total */}
-                            <div className="flex justify-between items-center py-4 border-t border-gray-100 mb-4">
-                                <div>
-                                    <div className="text-xs text-[#6b7c72]">Convenience Fee</div>
-                                    <div className="text-lg font-bold text-[#0d1b12]">Total Amount</div>
-                                </div>
-                                <div className="text-right">
-                                    <div className="text-xs text-[#6b7c72]">₹49</div>
-                                    <div className="text-xl font-bold text-[#13ec5b]">₹{totalAmount + 49}</div>
-                                </div>
-                            </div>
-
                             {/* Book Button */}
-                            <button className="w-full py-4 bg-gradient-to-r from-[#13ec5b] to-[#0fd650] rounded-xl text-white font-bold text-lg hover:shadow-lg hover:shadow-[#13ec5b]/40 transition-all">
+                            <button
+                                onClick={handleBookNow}
+                                className="w-full py-4 bg-gradient-to-r from-[#13ec5b] to-[#0fd650] rounded-xl text-white font-bold text-lg hover:shadow-lg hover:shadow-[#13ec5b]/40 transition-all"
+                            >
                                 BOOK NOW
                             </button>
 
